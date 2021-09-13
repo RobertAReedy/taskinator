@@ -9,8 +9,6 @@ var createTaskHandler = function(event) {
     listItemEl.className = "task-item";
     listItemEl.textContent = "fear my power";
     tasksToDoEl.appendChild(listItemEl);
-
-    console.log(event);
 }
 
 formEl.addEventListener("submit", createTaskHandler);
