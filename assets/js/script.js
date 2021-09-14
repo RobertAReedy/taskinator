@@ -4,6 +4,7 @@ var pageContentEl = document.querySelector("#page-content");
 var tasksInProgressEl = document.querySelector("#tasks-in-progress");
 var tasksCompletedEl = document.querySelector("#tasks-completed");
 var taskIdCounter = 0;
+var tasks = [];
 
 var completeEditTask = function(taskName, taskType, taskId) {
     // find the matching task list item
@@ -12,6 +13,13 @@ var completeEditTask = function(taskName, taskType, taskId) {
     // set new values
     taskSelected.querySelector("h3.task-name").textContent = taskName;
     taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].name = taskName;
+            tasks[i].type = taskType;
+        }
+    }
 
     alert("Task Updated!");
 
@@ -36,7 +44,8 @@ var taskFormHandler = function(event) {
 
     var taskDataObj = {
         name: taskNameInput,
-        type: taskTypeInput
+        type: taskTypeInput,
+        status: "to do"
     };
     // has data attribute, so get task id and call function to complete edit process
     if (isEdit) {
@@ -47,7 +56,8 @@ var taskFormHandler = function(event) {
     else {
         var taskDataObj = {
         name: taskNameInput,
-        type: taskTypeInput
+        type: taskTypeInput,
+        status: "to do"
         };
   
     createTaskEl(taskDataObj);
@@ -70,7 +80,13 @@ var createTaskEl = function(taskDataObj) {
     listItemEl.appendChild(taskActionsEl);
     tasksToDoEl.appendChild(listItemEl);
 
+    taskDataObj.id = taskIdCounter;
+    tasks.push(taskDataObj);
+
     taskIdCounter++;
+
+    console.log(taskDataObj);
+    console.log(taskDataObj.status);
 }
 
 var createTaskActions = function(taskId) {
@@ -147,20 +163,15 @@ var taskButtonHandler = function(event) {
 }
 
 var taskStatusChangeHandler = function(event) {
-    console.log(event);
-    console.log("does the task have a data-task-id: " + event.target.hasAttribute("data-task-id"));
     // get the task item's id
     var taskId = event.target.getAttribute("data-task-id"); //THIS IS THE METHOD THAT'S FAILING ----------------------------------
-    console.log("found task id: " + taskId);
-  
+    
     // get the currently selected option's value and convert to lowercase
     var statusValue = event.target.value.toLowerCase();
   
     // find the parent task item element based on the id
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
-    console.log("found task selector: " + taskSelected);
-    // THIS LOG DISPLAYS NULL THIS IS WHERE THE PROBLEM IS------------------------------------------------------------------------------
-
+    
     if (statusValue === "to do") {
         tasksToDoEl.appendChild(taskSelected);
     } 
@@ -170,6 +181,13 @@ var taskStatusChangeHandler = function(event) {
     else if (statusValue === "completed") {
         tasksCompletedEl.appendChild(taskSelected);
     }
+
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].status = statusValue;
+        }
+    }
+    console.log(tasks);
 };
 
 formEl.addEventListener("submit", taskFormHandler);
