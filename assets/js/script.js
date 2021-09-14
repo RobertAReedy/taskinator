@@ -245,6 +245,7 @@ var loadTasks = function() {
         }
 
         console.log(tasks[i]);
+        saveTasks();
     }
 }
 
