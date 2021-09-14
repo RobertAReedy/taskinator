@@ -172,8 +172,8 @@ var taskButtonHandler = function(event) {
 
 var taskStatusChangeHandler = function(event) {
     // get the task item's id
-    var taskId = event.target.getAttribute("data-task-id"); //THIS IS THE METHOD THAT'S FAILING ----------------------------------
-    
+    var taskId = event.target.getAttribute("data-task-id"); 
+
     // get the currently selected option's value and convert to lowercase
     var statusValue = event.target.value.toLowerCase();
   
@@ -216,6 +216,34 @@ var loadTasks = function() {
 
     //iterate thru tasks array and recreate task elements on page
     for (var i = 0; i < tasks.length; i++) {
+        tasks[i].id = taskIdCounter; taskIdCounter++;
+        var listItemEl = document.createElement("li");
+        listItemEl.className = "task-item";
+
+        // add task id as a custom attribute
+        listItemEl.setAttribute("data-task-id", tasks[i].id);
+
+        var taskInfoEl = document.createElement("div");
+        taskInfoEl.className = "task-info";
+        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
+
+        listItemEl.appendChild(taskInfoEl);
+        var taskActionsEl = createTaskActions(tasks[i].id);
+        listItemEl.appendChild(taskActionsEl);
+
+        if (tasks[i].status === "to do") {
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;
+            tasksToDoEl.appendChild(listItemEl);
+        }
+        else if (tasks[i].status === "in progress") {
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
+            tasksInProgressEl.appendChild(listItemEl);
+        }
+        else if (tasks[i].status === "completed") {
+            listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
+            tasksCompletedEl.appendChild(listItemEl);
+        }
+
         console.log(tasks[i]);
     }
 }
